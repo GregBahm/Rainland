@@ -9,79 +9,64 @@
 		Tags { "RenderType"="Opaque" }
 		LOD 100
 
+        Cull Off
+
 		Pass
 		{
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma geometry geo
 			#pragma fragment frag
-			
-            struct FixedSliceData 
-            {
-                float2 StartLocation;
-            };
+            #define ChainLength 32
 
-            struct VariableSliceData
-            {
-                float2 CurrentLocation;
-                float Velocity; 
-                int LifeRemaining;
-            };
-
-            StructuredBuffer<FixedSliceData> _FixedDataBuffer;
-            StructuredBuffer<VariableSliceData> _VariableDataBuffer;
+            StructuredBuffer<float3> _VariableDataBuffer;
 
 			struct v2g
 			{
-                float4 pos : SV_POSITION;
+                float3 pos : TEXCOORD0;
             };
 
 			struct g2f
 			{
 				float4 vertex : SV_POSITION;
+                float val : TEXCOORD0;
 			};
             
             v2g vert(uint meshId : SV_VertexID, uint instanceId : SV_InstanceID)
             {
-                VariableSliceData variableData = _VariableDataBuffer[instanceId];
-
 				v2g o;
-                o.pos = float4(variableData.CurrentLocation.x,0,variableData.CurrentLocation.y, 1);
+                o.pos = _VariableDataBuffer[instanceId * ChainLength + meshId];
 				return o;
 			}
 
             float _Size;
             
 			[maxvertexcount(4)]
-			void geo(point v2g p[1], inout TriangleStream<g2f> triStream)
+			void geo(line v2g p[2], inout TriangleStream<g2f> triStream)
 			{
-				float4 vertBase = p[0].pos;
-				float4 vertBaseClip = UnityObjectToClipPos(vertBase);
-
-				float4 leftScreenOffset = float4(_Size, 0, 0, 0);
-				float4 rightScreenOffset = float4(-_Size, 0, 0, 0);
-				float4 topScreenOffset = float4(0, -_Size, 0, 0);
-				float4 bottomScreenOffset = float4(0, _Size, 0, 0); 
-
-				float4 topVertA = leftScreenOffset + topScreenOffset + vertBaseClip;
-				float4 topVertB = rightScreenOffset + topScreenOffset + vertBaseClip;
-				float4 bottomVertA = leftScreenOffset + bottomScreenOffset + vertBaseClip;
-				float4 bottomVertB = rightScreenOffset + bottomScreenOffset + vertBaseClip;
+				float3 segmentStart = p[0].pos;
+				float3 segmentEnd = p[1].pos;
+                
+                float3 droppedStart = float3(segmentStart.x, 0, segmentStart.z);
+                float3 droppedEnd = float3(segmentEnd.x, 0, segmentEnd.z);
 
 				g2f o;
-				o.vertex = topVertB;
+                o.val = segmentStart.y;
+				o.vertex = UnityObjectToClipPos(segmentStart);
 				triStream.Append(o);
-				o.vertex = topVertA;
+                o.val = segmentEnd.y;
+				o.vertex = UnityObjectToClipPos(segmentEnd);
 				triStream.Append(o);
-				o.vertex = bottomVertB;
+                o.val = 0;
+				o.vertex = UnityObjectToClipPos(droppedStart);
 				triStream.Append(o);
-				o.vertex = bottomVertA;
+				o.vertex = UnityObjectToClipPos(droppedEnd);
 				triStream.Append(o);
             }
 			
 			fixed4 frag (g2f i) : SV_Target
 			{
-                return 1;
+                return i.val;
 			}
 			ENDCG
 		}
