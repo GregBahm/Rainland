@@ -6,7 +6,7 @@ RWStructuredBuffer<float3> _VariableDataBuffer;
 Texture2D<float4> _SourceTexture;
 SamplerState sampler_SourceTexture;
 
-#define ChainLength 32 
+#define ChainLength 128 
 
 int _Lifespan;
 float _Dampener;

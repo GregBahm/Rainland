@@ -10,12 +10,13 @@ public class MainScript : MonoBehaviour
     public Material Mat;
     public int PointsCount;
     
+    [Range(0, 0.05f)]
     public float Dampener;
     [Range(0, 1)]
     public float HeightSmooth;
     public float TextureOffset;
 
-    private const int ChainLength = 32;
+    private const int ChainLength = 128;
 
     private ComputeBuffer _variableDataBuffer;
     private const int VariableDataStride = sizeof(float) * 3;
