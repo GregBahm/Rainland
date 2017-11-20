@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -186,8 +186,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 143768193}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0.021944951, y: 0.8865348, z: -0.46019855, w: -0.042330235}
+  m_LocalPosition: {x: 0.35630834, y: 3.3332977, z: 2.066625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -223,9 +223,10 @@ MonoBehaviour:
   NoiseSource: {fileID: 2800000, guid: eb7f5c00199e5c3488ad910b1cde61a0, type: 3}
   Computer: {fileID: 7200000, guid: 49abf256a71f1094498731128bb951fc, type: 3}
   Mat: {fileID: 2100000, guid: 5e48c2a7d6e0e3b43bf1a158bd094c7c, type: 2}
-  PointsCount: 100
-  Lifespan: 100
-  Dampener: 0.001
+  PointsCount: 10
+  Dampener: 0.05
+  HeightSmooth: 0.482
+  TextureOffset: 0
 --- !u!4 &698065673
 Transform:
   m_ObjectHideFlags: 0
@@ -234,7 +235,7 @@ Transform:
   m_GameObject: {fileID: 698065671}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2

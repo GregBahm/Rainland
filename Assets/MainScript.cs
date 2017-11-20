@@ -9,9 +9,11 @@ public class MainScript : MonoBehaviour
     public ComputeShader Computer;
     public Material Mat;
     public int PointsCount;
-
-    public int Lifespan;
+    
     public float Dampener;
+    [Range(0, 1)]
+    public float HeightSmooth;
+    public float TextureOffset;
 
     private const int ChainLength = 32;
 
@@ -36,7 +38,7 @@ public class MainScript : MonoBehaviour
         {
             float x = UnityEngine.Random.value;
             float z = UnityEngine.Random.value;
-            Vector3 randomPoint = new Vector3(x, 0, z);
+            Vector3 randomPoint = new Vector3(x, .1f, z);
             data[i] = randomPoint;
         }
         ret.SetData(data);
@@ -47,12 +49,14 @@ public class MainScript : MonoBehaviour
     {
         DispatchComputeShader();
         Mat.SetBuffer("_VariableDataBuffer", _variableDataBuffer);
+        Mat.SetMatrix("_MasterMatrix", transform.localToWorldMatrix);
     }
 
     private void DispatchComputeShader()
     {
-        Computer.SetInt("_Lifespan", Lifespan);
         Computer.SetFloat("_Dampener", Dampener);
+        Computer.SetFloat("_HeightSmooth", HeightSmooth);
+        Computer.SetFloat("_TextureOffset", TextureOffset);
         Computer.SetTexture(_computeKernel, "_SourceTexture", NoiseSource);
         Computer.SetBuffer(_computeKernel, "_VariableDataBuffer", _variableDataBuffer);
         Computer.Dispatch(_computeKernel, _groupsCount, 1, 1);
