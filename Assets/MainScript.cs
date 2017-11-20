@@ -18,8 +18,15 @@ public class MainScript : MonoBehaviour
 
     private const int ChainLength = 128;
 
+    struct SegmentData
+    {
+        public Vector2 Position;
+        public Vector2 Tangent;
+        public float Velocity;
+    };
+
     private ComputeBuffer _variableDataBuffer;
-    private const int VariableDataStride = sizeof(float) * 3;
+    private const int VariableDataStride = sizeof(float) * 5;
 
     private int _computeKernel;
     private int _groupsCount;
@@ -34,13 +41,13 @@ public class MainScript : MonoBehaviour
     private ComputeBuffer GetVariableDataBuffer()
     {
         ComputeBuffer ret = new ComputeBuffer(PointsCount * ChainLength, VariableDataStride);
-        Vector3[] data = new Vector3[PointsCount * ChainLength];
+        SegmentData[] data = new SegmentData[PointsCount * ChainLength];
         for (int i = 0; i < (PointsCount * ChainLength); i++)
         {
             float x = UnityEngine.Random.value;
             float z = UnityEngine.Random.value;
-            Vector3 randomPoint = new Vector3(x, .1f, z);
-            data[i] = randomPoint;
+            Vector2 randomPoint = new Vector2(x, z);
+            data[i] = new SegmentData() { Position = randomPoint} ;
         }
         ret.SetData(data);
         return ret;

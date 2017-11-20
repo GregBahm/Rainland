@@ -223,7 +223,7 @@ MonoBehaviour:
   NoiseSource: {fileID: 2800000, guid: eb7f5c00199e5c3488ad910b1cde61a0, type: 3}
   Computer: {fileID: 7200000, guid: 49abf256a71f1094498731128bb951fc, type: 3}
   Mat: {fileID: 2100000, guid: 5e48c2a7d6e0e3b43bf1a158bd094c7c, type: 2}
-  PointsCount: 1000
+  PointsCount: 2000
   Dampener: 0.0081
   HeightSmooth: 0.055
   TextureOffset: 0
@@ -235,7 +235,7 @@ Transform:
   m_GameObject: {fileID: 698065671}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 0.25, z: 3}
+  m_LocalScale: {x: 3, y: 0.1, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2

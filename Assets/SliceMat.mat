@@ -66,8 +66,10 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Powa: 1.18
     - _Size: 0.02
     - _SmoothnessTextureChannel: 0
+    - _Span: 0.061
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Threshold: 0.11

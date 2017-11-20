@@ -1,7 +1,14 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel ComputeSlice
+
+struct SegmentData
+{
+    float2 Position;
+    float2 Tangent;
+    float Velocity;
+};
 		
-RWStructuredBuffer<float3> _VariableDataBuffer;
+RWStructuredBuffer<SegmentData> _VariableDataBuffer;
 
 Texture2D<float4> _SourceTexture;
 SamplerState sampler_SourceTexture;
@@ -17,9 +24,9 @@ float _TextureOffset;
 void ComputeSlice (uint3 id : SV_DispatchThreadID)
 {
     uint startingIndex = id.x * ChainLength;
-    float2 lastPosition = _VariableDataBuffer[startingIndex].xz;
+    float2 lastPosition = _VariableDataBuffer[startingIndex].Position;
     float2 newPosition;
-    float lastHeight = .1; 
+    float lastHeight = 0; 
     for(uint i = 1; i < ChainLength; i++)
     {
 	    float4 sourceTextureSample = _SourceTexture.SampleLevel(sampler_SourceTexture, lastPosition, 0);
@@ -28,7 +35,11 @@ void ComputeSlice (uint3 id : SV_DispatchThreadID)
         float newHeight = length(modifier);
         lastHeight = lerp(lastHeight, newHeight, _HeightSmooth);
 
-        _VariableDataBuffer[startingIndex + i] = float3(newPosition.x, lastHeight, newPosition.y);
+        SegmentData newData;
+        newData.Position = newPosition;
+        newData.Velocity = lastHeight;
+        newData.Tangent = normalize(newPosition - lastPosition).yx * float2(-1, 1);
+        _VariableDataBuffer[startingIndex + i] = newData;
         lastPosition = newPosition;
     }
 }
