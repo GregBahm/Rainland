@@ -1,0 +1,50 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel ComputeSlice
+		
+struct FixedSliceData 
+{
+    float2 StartLocation;
+};
+
+struct VariableSliceData
+{
+    float2 CurrentLocation;
+    float Velocity; 
+    int LifeRemaining;
+};
+
+StructuredBuffer<FixedSliceData> _FixedDataBuffer;
+RWStructuredBuffer<VariableSliceData> _VariableDataBuffer;
+
+Texture2D<float4> _SourceTexture;
+SamplerState sampler_SourceTexture;
+
+int _Lifespan;
+float _Dampener;
+
+[numthreads(128,1,1)]
+void ComputeSlice (uint3 id : SV_DispatchThreadID)
+{
+    VariableSliceData variableData = _VariableDataBuffer[id.x];
+
+    float2 newLocation;
+    int newLifeRemainig = variableData.LifeRemaining - 1;
+    if(newLifeRemainig == 0)
+    {
+        FixedSliceData fixedData = _FixedDataBuffer[id.x];
+        newLocation = fixedData.StartLocation;
+        newLifeRemainig = _Lifespan;
+    }
+    else
+    {
+        float2 oldLocation = variableData.CurrentLocation;
+	    float4 sourceTextureSample = _SourceTexture.SampleLevel(sampler_SourceTexture, oldLocation, 0);
+        float2 modifier = ((sourceTextureSample.xy - .5) * 2);
+        newLocation = oldLocation + modifier * _Dampener;
+    }
+    VariableSliceData newData;
+    newData.CurrentLocation = newLocation;
+    newData.LifeRemaining = newLifeRemainig;
+    newData.Velocity = variableData.CurrentLocation;
+    _VariableDataBuffer[id.x] = newData;
+}
